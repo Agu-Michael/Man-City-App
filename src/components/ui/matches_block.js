@@ -10,7 +10,7 @@ const MatchesBlock = ({match}) => {
   return (
     <div className='match_block'>
       <div className='match_date'>{displayDate}</div>
-      <div className='match_wrapper'>
+      <div className='match_wrapper'> 
         <div className='match_top'>
             <div className='left'>
                 <div className='icon' style={{background: `url(/images/team_icons/${match.localThmb}.png)`}}></div>
