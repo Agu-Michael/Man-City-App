@@ -275,7 +275,7 @@ class AddEditMatches extends Component{
                             formdata={this.state.formData.stadium}
                         />
                   </div>
-                  <div className='split_fields'>
+                  <div className='split_fields last'>
                         <FormField
                             id = {'result'}
                             change={(element)=>this.updateForm(element)}
@@ -288,6 +288,7 @@ class AddEditMatches extends Component{
                             formdata={this.state.formData.final}
                         />
                   </div>
+                  
                   <div className='success_label'>{this.state.formSuccess}</div>
                   {this.state.formError ? 
                     <div className='error_label'>
