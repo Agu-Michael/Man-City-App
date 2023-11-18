@@ -1,5 +1,5 @@
 import React from 'react';
-const FormField = ({formdata, id, change}) =>{
+const FormField = ({formdata, id, change, teams}) =>{
     //This function below is to check for error and display error messages
     const showError = ()=>{
         
@@ -15,8 +15,19 @@ const FormField = ({formdata, id, change}) =>{
     //This function below is render the reuseable template
     const renderTemplate = () =>{
         let formTemplate = null;    
+        // Inside the renderOptions function
+        const renderOptions = () =>
+          teams
+            ? teams.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))
+            : null;
+
 
         switch(formdata.element){
+            //this case handles input
             case('input'): 
                 formTemplate = (
                   <div>
@@ -32,6 +43,7 @@ const FormField = ({formdata, id, change}) =>{
                   </div>
                 );
             break;
+            //this case handles the select options with a default value of select one
            case ('select'):
             formTemplate = (
                 <div>
@@ -49,13 +61,14 @@ const FormField = ({formdata, id, change}) =>{
                     </select>
                     {showError()}
                 </div>
-            );
+            );  
             break;
             default: 
                 formTemplate = null 
         }
         return formTemplate;
     }
+
 
     return(
         <div>

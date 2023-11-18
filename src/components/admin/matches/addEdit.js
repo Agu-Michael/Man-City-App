@@ -189,24 +189,87 @@ class AddEditMatches extends Component{
         })
     }
 
-    componentDidMount(){
-        const matchId = this.props. match.params.id
-        if(!matchId){
-            //add match
-        }else{
-            const matchRef = ref(database, `matches/${matchId}`)
-            get(matchRef).then((snapshot)=>{
-                if(snapshot.exists()){
-                    const match = snapshot.val();
-                    console.log(match);
-                }else{
-                    console.log("Match not found");
-                }
-            }).catch((error)=> console.error("Error fetching data:", error))
+
+// Inside componentDidMount
+componentDidMount() {
+  const teamId = this.props.match.params.id;
+
+  // Function to fetch teams
+  const teamRef = ref(database, 'teams');
+  get(teamRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const teams = snapshot.val();
+
+        // Update state
+        this.setState({ teams });
+
+        console.log('Teams:', teams);
+      } else {
+        console.log('Teams not found');
+      }
+    })
+    .catch((error) => console.error('Error fetching items', error));
+
+    if (!teamId) {
+        // add match
+        this.setState({ formType: 'Add Match' });
+      } else {
+        const matchRef = ref(database, `teams/${teamId}`);
+        get(matchRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const team = snapshot.val();
+              console.log(team);
+      
+              // Set the formType for editing
+              this.setState({ formType: 'Edit Match' });
+            } else {
+              console.log('Team not found');
             }
-        };
+          })
+          .catch((error) => console.error('Error fetching data:', error));
+
+         
+      }
+      
+}
+
+
+    // componentDidMount(){
+    //     const teamId = this.props.match.params.id
+    //     // function to fetch teams
+    //     const teamRef = ref(database, 'teams')
+    //     get(teamRef).then(((snapshot)=>{
+    //         if (snapshot.exists()){
+    //             const teams = snapshot.val();
+
+    //             //update state
+    //             this.setState({ teams });
+
+    //             console.log('Teams:', teams)
+    //         }else{
+    //             console.log('teams not found')
+    //         }
+    //     })).catch((error)=>console.errror('error fetching items', error));
+
+    //     if(!teamId){
+    //         //add match
+    //     }else{
+    //         const matchRef = ref(database, `teams/${teamId}`)
+    //         get(teamRef).then((snapshot)=>{
+    //             if(snapshot.exists()){
+    //                 const match = snapshot.val();
+    //                 console.log(team);
+    //             }else{
+    //                 console.log("Match not found");
+    //             }
+    //         }).catch((error)=> console.error("Error fetching data:", error))
+    //         }
+    //     };
     
     render(){
+      
         return (
           <AdminLayout>
             <div className="editmatch_dialog_wrapper">
@@ -227,7 +290,9 @@ class AddEditMatches extends Component{
                         <FormField
                           id={"local"}
                           change={(element) => this.updateForm(element)}
-                          formdata={this.state.formData.local}
+                          formdata ={this.state.formData.local}
+                          teams = {this.state.teams}
+                        
                         />
                       </div>
                       <div>
@@ -249,6 +314,7 @@ class AddEditMatches extends Component{
                           id={"away"}
                           change={(element) => this.updateForm(element)}
                           formdata={this.state.formData.away}
+                          teams= {this.state.teams}
                         />
                       </div>
                       <div>
