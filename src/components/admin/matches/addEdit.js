@@ -189,33 +189,60 @@ class AddEditMatches extends Component{
         })
     }
 
+ updateFields(matchRef, teams, teamOptions, type, teamId){
+    const newformdata = {...this.state.formData};
+    for(let key in newformdata){
+      if(matchRef){
+        newformdata[key].value = matchRef[key] || ''
+        newformdata[key].valid = true;
+      } if(key === 'local'|| key === 'away'){
+        newformdata[key].config.options =  teamOptions
+      }
+    }
+    console.log(newformdata );
+    this.setState({formData: newformdata,
+                  formType: type,
+                  matchId,
+                  teams
 
+    })
+ }
 // Inside componentDidMount
 componentDidMount() {
   const teamId = this.props.match.params.id;
-
-  // Function to fetch teams
-  const teamRef = ref(database, 'teams');
-  get(teamRef)
+  const getTeams = (matchRef, type)=>{
+    get(teamRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
         const teams = snapshot.val();
 
         // Update state
         this.setState({ teams });
+        const teamOptions = [];
+        snapshot.forEach((childSnapshot)=>{
+          teamOptions.push({
+            key: childSnapshot.val().shortName,
+            value: childSnapshot.val().shortName
+          })
+        })
+        this.updateFields(matchRef, teams, teamOptions, type, teamId)
 
         console.log('Teams:', teams);
-      } else {
+      } else {  
         console.log('Teams not found');
       }
     })
     .catch((error) => console.error('Error fetching items', error));
 
+  }
+  // Function to fetch teams
+  const teamRef = ref(database, 'teams');
+  
     if (!teamId) {
         // add match
         this.setState({ formType: 'Add Match' });
       } else {
-        const matchRef = ref(database, `teams/${teamId}`);
+        const matchRef = ref(database, 'matches');
         get(matchRef)
           .then((snapshot) => {
             if (snapshot.exists()) {
@@ -230,7 +257,7 @@ componentDidMount() {
           })
           .catch((error) => console.error('Error fetching data:', error));
 
-         
+         getTeams(matchRef, 'Edit Match');
       }
       
 }
