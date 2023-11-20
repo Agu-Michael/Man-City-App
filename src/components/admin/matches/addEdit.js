@@ -209,7 +209,8 @@ class AddEditMatches extends Component{
  }
 // Inside componentDidMount
 componentDidMount() {
-  const teamId = this.props.match.params.id;
+  const teamId = this.props.match.params.id;// this variable fetches properties based on the id parameter from the routes
+  const matchRef = ref(database, 'matches')
   const getTeams = (matchRef, type)=>{
     get(teamRef)
     .then((snapshot) => {
@@ -237,7 +238,7 @@ componentDidMount() {
   }
   // Function to fetch teams
   const teamRef = ref(database, 'teams');
-  
+   //this function adds matches if it does not identify any team id. It draws it's data from the firebase realtime database
     if (!teamId) {
         // add match
         this.setState({ formType: 'Add Match' });
