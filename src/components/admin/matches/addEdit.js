@@ -3,10 +3,10 @@ import AdminLayout from '../../../hoc/Adminlayout';
 import FormField from '../../ui/formField';
 import {validate} from '../../ui/misc';
 import { firebaseTeams, database, firebaseMatches } from '../../../firebase';
-import {get, ref} from 'firebase/database';
+import {get, ref, update} from 'firebase/database';
 class AddEditMatches extends Component {
   state = {
-      teamId: "",
+    teamId: "",
     formType: "",
     formError: false,
     formSuccess: "",
@@ -282,7 +282,16 @@ class AddEditMatches extends Component {
   //         }).catch((error)=> console.error("Error fetching data:", error))
   //         }
   //     };
-
+  successForm(message){
+    this.setState({
+      formSuccess: message
+    });
+    setTimeout(()=>{
+      this.setState({
+        formSuccess: ''
+      })
+    }, 2000)
+  }
   submitForm =async (e)=>{
     e.preventDefault();
     let dataToSubmit = {};
@@ -291,8 +300,37 @@ class AddEditMatches extends Component {
       dataToSubmit[key]= this.state.formData[key].value
       formIsValid = this.state.formData[key].valid && formIsValid
     }
+    Object.keys(this.state.teams).forEach((teamKey) => {
+      // Access each team data using the current key
+      const team = this.state.teams[teamKey];
+    
+      // Check if the local team shortName matches the one to be submitted
+      if (team.shortName === dataToSubmit.local) {
+        // If there's a match, update the 'localThmb' property in the data to be submitted
+        dataToSubmit['localThmb'] = team.thmb;
+      }
+    
+      // Check if the away team shortName matches the one to be submitted
+      if (team.shortName === dataToSubmit.away) {
+        // If there's a match, update the 'awayThmb' property in the data to be submitted
+        dataToSubmit['awayThmb'] = team.thmb;
+      }
+    });
+    
+    
     if(formIsValid){
-       console.log(dataToSubmit)
+       if(this.state.formType === 'Edit Match'){
+        const matchRef = ref(database, `matches/${this.state.matchId}`)
+        update(matchRef, dataToSubmit).then(()=>{
+          this.succesForm('Updated correctly')
+        }).catch((error)=>{
+          this.setState({
+            formError: true
+          })
+        })
+       }else{
+        //add match 
+       }
 
        // get the authentication instance here
         // const auth = getAuth(firebaseApp);
@@ -339,12 +377,9 @@ class AddEditMatches extends Component {
     this.setState({
         formError: true
     })
-};
+  }
 }
-
-
-
-  render() {
+ render() {
     return (
       <AdminLayout>
         <div className="editmatch_dialog_wrapper">           
