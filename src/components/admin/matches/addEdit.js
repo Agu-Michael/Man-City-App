@@ -4,7 +4,7 @@ import FormField from '../../ui/formField';
 import {validate} from '../../ui/misc';
 import { firebaseTeams, database, firebaseMatches } from '../../../firebase';
 import {get, ref, update} from 'firebase/database';
-class AddEditMatches extends Component {
+class AddEditMatches extends Component{
   state = {
     teamId: "",
     formType: "",
@@ -230,6 +230,7 @@ class AddEditMatches extends Component {
     //this function adds matches if it does not identify any team id. It draws it's data from the firebase realtime database
     if (!teamId) {
       // add match
+      getTeams(false, "Add Match");
       this.setState({ formType: "Add Match" });
     } else {
       const matchRef = ref(database, "matches");
@@ -323,14 +324,28 @@ class AddEditMatches extends Component {
         const matchRef = ref(database, `matches/${this.state.matchId}`)
         update(matchRef, dataToSubmit).then(()=>{
           this.succesForm('Updated correctly')
-        }).catch((error)=>{
+        }).catch((error)=>{ 
           this.setState({
             formError: true
           })
         })
-       }else{
+       }else if(this.state.formType === 'Add Match'){
+        //This function successfully adds matches to the firebase database and is reflected on the dashboard and home page
         //add match 
-       }
+        const matchRef = ref(database, `matches/${this.state.matchId}`)
+        update(matchRef, dataToSubmit).then(()=>{
+          this.succesForm('Updated correctly')
+        }).catch((error)=>{ 
+          this.setState({
+            formError: true
+          })
+        })
+
+        // firebaseMatches.push(dataToSubmit).then(()=>{
+        //   this.props.history.push('/admin_matches')
+        // }).catch((error)=>this.setState({
+        //   formError: true
+        // }))
 
        // get the authentication instance here
         // const auth = getAuth(firebaseApp);
@@ -373,13 +388,13 @@ class AddEditMatches extends Component {
     //     });
     // }
 
-}else{
-    this.setState({
-        formError: true
-    })
-  }
 }
- render() {
+}else{
+  this.setState({
+      formError: true
+  })
+}}
+ render(){
     return (
       <AdminLayout>
         <div className="editmatch_dialog_wrapper">           
@@ -479,4 +494,5 @@ class AddEditMatches extends Component {
     );
   }
 };
-export default AddEditMatches;
+
+export default AddEditMatches
