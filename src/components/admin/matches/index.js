@@ -33,7 +33,10 @@ class AdminMatches extends Component {
     onValue(firebaseMatches, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const matches = Object.values(data);
+        const matches = Object.entries(data).map(([id, match])=>({
+          id, 
+          ...match
+        }));
         this.setState({
           isLoading: false,
           matches: reverseArray(matches),
