@@ -4,6 +4,7 @@ import FormField from '../../ui/formField';
 import {validate} from '../../ui/misc';
 import { firebaseTeams, database, firebase } from '../../../firebase';
 import {get, ref, update} from 'firebase/database';
+import Fileuploader from '../../ui/fileuploader';
 class AddEditPlayers extends Component{
     state = {
         playerId: '',
@@ -83,12 +84,72 @@ class AddEditPlayers extends Component{
                 validationMessage: '',
                 showLabel: true
                 
+            },
+            image: {
+              element : 'image', 
+              value: '',
+              validation: {
+                required: true
+              }, 
+              valid: true
+
             }
         }
     
     }
+    componentDidMount(){
+      const playerId= this.props.match.params.Id;
+      if(!playerId){
+        this.setState({
+          formType: 'Add Player'
+        })
+      }else{
+
+      }
+      
+    }
+
+    updateForm = (element) => {
+      const newFormData = { ...this.state.formData };
+      const newElement = { ...newFormData[element.id] };
+      newElement.value = element.e.target.value;
+      let validData = validate(newElement);
+      newElement.valid = validData[0];
+      newElement.validationMessage = validData[1];
+  
+      newFormData[element.id] = newElement;
+  
+      this.setState({
+        formError: false,
+        formData: newFormData,
+      });
+    };
+
+    submitForm =async (e)=>{
+      e.preventDefault();
+      let dataToSubmit = {};
+      let formIsValid = true;
+      for (let key in this.state.formData) {
+        dataToSubmit[key] = this.state.formData[key].value;
+        formIsValid = this.state.formData[key].valid && formIsValid;
+      }
+     
+
+      if (formIsValid) {
+        //submit form
+      } else {
+        this.setState({
+          formError: true,
+        });
+      }
+    }
+    //this function resets the image uploaded.
+    resetImage(){
+
+    }
 
     render(){
+      
         return (
           <AdminLayout>
             <div className="editplayers_dialog_wrapper">
@@ -96,6 +157,15 @@ class AddEditPlayers extends Component{
 
               <div>
                 <form onSubmit={(e) => this.submitForm(e)}>
+
+                  <Fileuploader
+                   dir='players'
+                   tag = {'Player image'}
+                   defaultImg = {this.state.defaultImg}
+                   defaultImgName= {this.state.formData.image.value}
+                   resetImage = { ()=>this.resetImage()}
+                   filename = {(filename)=>this.storeFileName(filename)}
+                  />
                   <FormField
                     id={"name"}
                     change={(element) => this.updateForm(element)}
@@ -106,16 +176,28 @@ class AddEditPlayers extends Component{
                     change={(element) => this.updateForm(element)}
                     formdata={this.state.formData.lastName}
                   />
-                   <FormField
+                  <FormField
                     id={"number"}
                     change={(element) => this.updateForm(element)}
                     formdata={this.state.formData.number}
                   />
-                   <FormField
+                  <FormField
                     id={"position"}
                     change={(element) => this.updateForm(element)}
                     formdata={this.state.formData.position}
                   />
+
+                  <div className="success_label">{this.state.formSuccess}</div>
+                  {this.state.formError ? (
+                    <div className="error_label">Something is wrong</div>
+                  ) : (
+                    ""
+                  )}
+                  <div className="admin_submit">
+                    <button onClick={(e) => this.submitForm(e)}>
+                      {this.state.formType}
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
