@@ -12,7 +12,7 @@ const FormField = ({formdata, id, change, teams}) =>{
         </div>
         return errorMessage
     }
-    //This function below is render the reuseable template
+    //This function below is rendering the reuseable template
     const renderTemplate = () =>{
         let formTemplate = null;    
         // Inside the renderOptions function

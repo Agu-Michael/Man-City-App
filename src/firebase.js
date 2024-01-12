@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref} from 'firebase/database';
+import { getStorage } from 'firebase/storage';
 
 
 const firebaseConfig = {
@@ -14,6 +15,7 @@ const firebaseConfig = {
   };
   const firebaseApp = initializeApp(firebaseConfig);
   const database = getDatabase(firebaseApp);
+  const storage = getStorage(firebaseApp)
   const firebasePromotions = ref(database, 'promotions');
  
   const firebaseMatches = ref(database, 'matches')
@@ -25,7 +27,8 @@ const firebaseConfig = {
     firebasePromotions,
     firebasePlayers,
     firebaseMatches,
-    firebaseTeams
+    firebaseTeams,
+    storage
   }
 
 // function fetchDataFromRealtimeDatabase() {

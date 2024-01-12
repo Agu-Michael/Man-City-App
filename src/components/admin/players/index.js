@@ -69,7 +69,7 @@ componentDidMount(){
                       <TableCell>
                         {player.number}
                       </TableCell>
-                      <TableCell>
+                       <TableCell>
                         {player.position}
                       </TableCell>
                     </TableRow>

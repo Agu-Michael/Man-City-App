@@ -8,7 +8,7 @@ const MatchesBlock = ({match}) => {
     : `Match not Played Yet: ${match.date}`;
 
   return (
-    <div className='match_block'>
+    <div className='match_block'> 
       <div className='match_date'>{displayDate}</div>
       <div className='match_wrapper'> 
         <div className='match_top'>
@@ -18,7 +18,7 @@ const MatchesBlock = ({match}) => {
             </div>
             <div className='right'>
               {match.final ? match.resultLocal : '-'}
-            </div>
+            </div> 
         </div>
         <div className='match_bottom'>
         <div className='left'>
